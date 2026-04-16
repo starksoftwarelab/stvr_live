@@ -45,7 +45,6 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     padding: 10px;
     max-width: 1920px;
@@ -56,6 +55,35 @@
     border-radius: 12px;
     padding: 6px;
     background: #111827;
+  }
+
+  /* 💻 จอคอม (ใหญ่) = 6 columns */
+  @media (min-width: 1200px) {
+    .grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  /* 📱 iPad / Tablet = 3 columns */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* 📱 มือถือ = 1 column */
+  @media (max-width: 767px) {
+    .grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    .header {
+      font-size: 22px;
+    }
+
+    .timer {
+      font-size: 14px;
+    }
   }
 </style>
 </head>
