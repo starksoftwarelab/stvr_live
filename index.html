@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STVRK Dashboard</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #020617);
+    color: #fff;
+  }
+
+  .header {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #3b82f6;
+    margin: 20px 0 10px;
+  }
+
+  .timer {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #22c55e;
+  }
+
+  .controls {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  select, button {
+    background: #3b82f6;
+    border: none;
+    padding: 10px 15px;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    padding: 10px;
+    max-width: 1920px;
+    margin: auto;
+  }
+
+  .box {
+    border-radius: 12px;
+    padding: 6px;
+    background: #111827;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="header">STVRK LIVE SIGNAL TRADING DASHBOARD</div>
+
+<div class="timer">⏱ Refresh in: <span id="countdown">120</span>s</div>
+
+<div class="controls">
+  <select id="intervalSelect">
+    <option value="1m">1M</option>
+    <option value="5m" selected>5M</option>
+    <option value="15m">15M</option>
+    <option value="30m">30M</option>
+    <option value="1h">1H</option>
+    <option value="4h">4H</option>
+    <option value="1d">1D</option>
+  </select>
+
+  <button onclick="updateDashboard()">⚡ Update</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const symbols = [
+"EURUSD","EURGBP","EURCHF","EURAUD","EURCAD","EURJPY",
+"USDCAD","USDCHF","USDJPY","CADCHF","CADJPY","AUDCHF",
+"AUDCAD","AUDJPY","AUDUSD","CHFJPY","GBPCHF","GBPCAD"
+];
+
+let currentInterval = "5m";
+
+function createWidget(container, symbol) {
+  const widgetDiv = document.createElement("div");
+  widgetDiv.className = "tradingview-widget-container__widget";
+
+  const script = document.createElement("script");
+  script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
+  script.async = true;
+  script.innerHTML = JSON.stringify({
+    symbol: "OANDA:" + symbol,
+    interval: currentInterval,
+    width: "100%",
+    height: 320
+  });
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "tradingview-widget-container";
+
+  wrapper.appendChild(widgetDiv);
+  wrapper.appendChild(script);
+
+  container.appendChild(wrapper);
+}
+
+function loadWidgets() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  symbols.forEach(sym => {
+    const box = document.createElement("div");
+    box.className = "box";
+
+    createWidget(box, sym);
+
+    grid.appendChild(box);
+  });
+}
+
+function updateDashboard() {
+  currentInterval = document.getElementById("intervalSelect").value;
+  loadWidgets();
+}
+
+// ⏱ Countdown
+let timeLeft = 120;
+const countdownEl = document.getElementById("countdown");
+
+setInterval(() => {
+  timeLeft--;
+  countdownEl.textContent = timeLeft;
+
+  if (timeLeft <= 0) {
+    location.reload();
+  }
+}, 1000);
+
+// โหลดครั้งแรก
+loadWidgets();
+</script>
+
+</body>
+</html>
